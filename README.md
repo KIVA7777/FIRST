@@ -11,3 +11,8 @@ First repository made for Data class excercise
 Make some **bold** text
 
 [link text](http://github.com/KIVA7777)
+
+Hello
+
+I like chocolate ice cream
+but not as much as anyone else

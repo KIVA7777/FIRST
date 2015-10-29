@@ -1,0 +1,198 @@
+
+# coding: utf-8
+
+# **U.S. Mass shootings from 1982-2015**
+
+# In[1]:
+
+import pandas as pd
+Mother = pd.read_table('MothrJones - Sheet1.csv', sep=',')
+
+
+# In[2]:
+
+Mother.head(5)
+
+
+# In[3]:
+
+Mother.dtypes
+
+
+# In[11]:
+
+get_ipython().magic(u'matplotlib inline')
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+
+# In[5]:
+
+location_df = Mother['Location'].apply(lambda x: pd.Series(x.split(', ')))
+
+loc_cols= ['City','State']
+
+location_df.columns=loc_cols
+
+
+# In[6]:
+
+location_df.State.replace('OR', 'Oregon', inplace=True)
+location_df.State.replace('TN', 'Tennessee', inplace=True)
+location_df.State.replace('SC', 'South Carolina', inplace=True)
+location_df.State.replace('WA', 'Washington', inplace=True)
+location_df.State.replace('CA', 'California', inplace=True)
+location_df.State.replace('District of Columbia', 'D.C.', inplace=True)
+
+
+# In[7]:
+
+Mother['City']=location_df.City
+Mother['State']=location_df.State
+
+
+# In[8]:
+
+Mother.drop(['Mental Health Sources', 'longitude', 'longitude', 'Location', 'Race', 'Where obtained', 'Mental Health' ], axis=1, inplace=True) 
+Mother.drop(['Sources', 'Type', 'Type of weapons', 'Weapon details'], axis=1, inplace=True) 
+
+
+# In[12]:
+
+Mother.State.value_counts().plot(kind='bar')
+
+
+# In[13]:
+
+WeaponCat = pd.read_table('MotherWeaponCategories - Sheet1.csv', sep=',', usecols=['Date', 'Types Of Weapon', 'Semiauto handguns', 'Rifles', 'Revolvers', 'Shotgun'])
+GunLawRank = pd.read_table('GunLawRank - Sheet1.csv', sep=',')
+StateNum = pd.read_table('State Code - Sheet1.csv', sep=',')
+
+
+# In[17]:
+
+WeaponCat.dropna(inplace=True)
+WeaponCat
+
+
+# In[21]:
+
+GunLawRank.drop('Num State Code', axis=1, inplace=True)
+GunLawRank
+
+
+# In[22]:
+
+index = StateNum.set_index('State')
+result = GunLawRank.join(index, on=['State'])
+
+indexB = WeaponCat.set_index('Date')
+resultB = Mother.join(indexB, on=['Date'])
+
+indexC = result.set_index('State')
+resultC = resultB.join(indexC, on=['State'])
+
+
+# In[23]:
+
+Jones = resultC
+Jones.rename(columns={'Total victims':'Total'}, inplace=True)
+###Jones is new working table
+Jones.dropna(inplace = True)
+Jones.drop(['Summary', 'Date', 'Gender', 'latitude'], axis = 1, inplace=True)
+
+
+# In[24]:
+
+Jones.State.value_counts().plot(kind='bar')
+
+
+# In[25]:
+
+Jones.Age.value_counts().plot(kind='bar')
+
+
+# In[33]:
+
+resultC.Age.plot(kind='density', title='Age Frequency')
+
+
+# In[29]:
+
+resultC.groupby('State').Total.mean().plot(kind='bar')
+
+
+# In[34]:
+
+resultC.groupby('State').Fatalities.mean().plot(kind='bar')
+
+
+# In[35]:
+
+resultC.groupby('State').Injured.mean().plot(kind='bar')
+
+
+# In[38]:
+
+Jones.Venue.value_counts().plot(kind='bar', title='Mass Shootings by Venue')
+
+
+# In[39]:
+
+print Mother['Summary'][1]
+
+
+# In[41]:
+
+print Mother['Summary'][2]
+
+
+# In[42]:
+
+print Mother['Summary'][3]
+
+
+# In[43]:
+
+print Mother['Summary'][4]
+
+
+# In[44]:
+
+print Mother['Summary'][5]
+
+
+# In[45]:
+
+print Mother['Summary'][6]
+
+
+# In[46]:
+
+print Mother['Summary'][7]
+
+
+# In[47]:
+
+print Mother['Summary'][8]
+
+
+# In[49]:
+
+print Mother['Summary'][9]
+
+
+# In[50]:
+
+print Mother['Summary'][10]
+
+
+# In[52]:
+
+print Mother.Summary.head(50)
+
+
+# In[ ]:
+
+
+
